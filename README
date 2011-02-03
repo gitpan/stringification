@@ -1,0 +1,59 @@
+NAME
+    "stringification" - allow or forbid implicitly converting references
+    into strings
+
+SYNOPSIS
+     no stringification;
+
+     my $array = [ 1, 2, 3 ];
+
+     print "My array is $array\n";  # dies
+
+DESCRIPTION
+    Normally in Perl, a reference may be implicitly converted into a string,
+    usually of a form like "HASH(0x1234567)".
+
+    This module provides a lexically-scoped pragma which alters the
+    behaviour of the following operations:
+
+     "$ref"             # stringify
+     $ref . "foo"       # concat
+     lc $ref
+     lcfirst $ref
+     uc $ref
+     ucfirst $ref
+     quotemeta $ref
+
+    When disabled by "no stringification", all of these operations will fail
+    with an exception when invoked on a non-object reference.
+
+     $ perl -E 'no stringification; my $arr = []; say "Array is $arr"'
+     Attempted to concat a reference at -e line 1.
+
+    The effects of this module are lexically scoped; to re-enable
+    stringification of references during a lexical scope, "use
+    stringification" again.
+
+TODO
+    *   More testing, especially around interoperatbility with other
+        op-hooking modules.
+
+    *   Hook more ops; including
+
+         print $ref
+         say $ref
+         join "", $ref
+         split //, $ref
+         $ref =~ m//
+         $ref =~ s///;
+         s//$ref/;
+         substr( $ref, 0, 0 )
+         substr( $str, 0, 0, $ref )
+         substr( $str, 0, 0 ) = $ref
+
+    *   Consider whether to detect for objects that don't have overload
+        magic, and forbid these too.
+
+AUTHOR
+    Paul Evans <leonerd@leonerd.org.uk>
+
