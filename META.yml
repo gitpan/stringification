@@ -17,9 +17,9 @@ name: stringification
 provides:
   stringification:
     file: lib/stringification.pm
-    version: 0.01_001
+    version: 0.01_002
 requires:
   XSLoader: 0
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.01_001
+version: 0.01_002

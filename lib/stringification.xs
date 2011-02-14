@@ -15,11 +15,14 @@ static int init_done = 0;
 
 static int is_enabled(pTHX)
 {
-  SV *hint = Perl_refcounted_he_fetch(aTHX_ PL_curcop->cop_hints_hash,
-                                      NULL,
-                                      __PACKAGE__, __PACKAGE_LEN__,
-                                      0,
-                                      0);
+  SV *hint;
+
+#ifdef cop_hints_fetch_pvn
+  hint = cop_hints_fetch_pvn(PL_curcop, __PACKAGE__, __PACKAGE_LEN__, 0, 0);
+#else
+  hint = Perl_refcounted_he_fetch(aTHX_ PL_curcop->cop_hints_hash,
+            NULL, __PACKAGE__, __PACKAGE_LEN__, 0, 0);
+#endif
   return !(hint && SvOK(hint));
 }
 
@@ -60,7 +63,7 @@ PP(pp_stringification_top1) {
     }
   }
 
-  croak("Attempted to %s a reference", PL_op_name[PL_op->op_type]);
+  croak("Attempted to %s a reference", PL_op_desc[PL_op->op_type]);
 }
 
 OP *(*real_pp_concat)(pTHX);
@@ -72,7 +75,7 @@ PP(pp_stringification_concat) {
     return (*real_pp_concat)(aTHX);
   }
 
-  croak("Attempted to concat a reference");
+  croak("Attempted to %s a reference", PL_op_desc[PL_op->op_type]);
 }
 
 MODULE = stringification       PACKAGE = stringification

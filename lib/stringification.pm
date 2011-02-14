@@ -10,7 +10,7 @@ use warnings;
 
 use Carp;
 
-our $VERSION = '0.01_001';
+our $VERSION = '0.01_002';
 
 require XSLoader;
 XSLoader::load(__PACKAGE__, $VERSION );
