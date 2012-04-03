@@ -1,5 +1,8 @@
 Revision history for overload-substr
 
+0.01_003 CHANGES:
+         * Back compat for perls before 5.9.5 - lack of cop_hints_hash
+
 0.01_002 CHANGES:
          * Bugfix for perl-5.13.7 and above - cop_hints vs. refcounted hash.
 

@@ -1,5 +1,5 @@
 NAME
-    "stringification" - allow or forbid implicitly converting references
+    `stringification' - allow or forbid implicitly converting references
     into strings
 
 SYNOPSIS
@@ -11,7 +11,7 @@ SYNOPSIS
 
 DESCRIPTION
     Normally in Perl, a reference may be implicitly converted into a string,
-    usually of a form like "HASH(0x1234567)".
+    usually of a form like `HASH(0x1234567)'.
 
     This module provides a lexically-scoped pragma which alters the
     behaviour of the following operations:
@@ -24,15 +24,15 @@ DESCRIPTION
      ucfirst $ref
      quotemeta $ref
 
-    When disabled by "no stringification", all of these operations will fail
+    When disabled by `no stringification', all of these operations will fail
     with an exception when invoked on a non-object reference.
 
      $ perl -E 'no stringification; my $arr = []; say "Array is $arr"'
      Attempted to concat a reference at -e line 1.
 
     The effects of this module are lexically scoped; to re-enable
-    stringification of references during a lexical scope, "use
-    stringification" again.
+    stringification of references during a lexical scope, `use
+    stringification' again.
 
 TODO
     *   More testing, especially around interoperatbility with other
@@ -53,6 +53,11 @@ TODO
 
     *   Consider whether to detect for objects that don't have overload
         magic, and forbid these too.
+
+    *   A mode where string conversions just give warnings, rather than
+        outright failures.
+
+         no stringification 'warn';
 
 AUTHOR
     Paul Evans <leonerd@leonerd.org.uk>

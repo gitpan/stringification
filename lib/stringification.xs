@@ -1,7 +1,7 @@
 /*  You may distribute under the terms of either the GNU General Public License
  *  or the Artistic License (the same terms as Perl itself)
  *
- *  (C) Paul Evans, 2011 -- leonerd@leonerd.org.uk
+ *  (C) Paul Evans, 2011-2012 -- leonerd@leonerd.org.uk
  */
 
 #include "EXTERN.h"
@@ -19,9 +19,14 @@ static int is_enabled(pTHX)
 
 #ifdef cop_hints_fetch_pvn
   hint = cop_hints_fetch_pvn(PL_curcop, __PACKAGE__, __PACKAGE_LEN__, 0, 0);
-#else
+#elif PERL_VERSION >= 9 || (PERL_VERSION == 9 && PERL_SUBVERSION >= 5)
   hint = Perl_refcounted_he_fetch(aTHX_ PL_curcop->cop_hints_hash,
             NULL, __PACKAGE__, __PACKAGE_LEN__, 0, 0);
+#else
+ SV **val = hv_fetch(GvHV(PL_hintgv), __PACKAGE__, __PACKAGE_LEN__, 0);
+  if (!val)
+    return 1;
+  hint = *val;
 #endif
   return !(hint && SvOK(hint));
 }

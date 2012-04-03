@@ -1,7 +1,7 @@
 #  You may distribute under the terms of either the GNU General Public License
 #  or the Artistic License (the same terms as Perl itself)
 #
-#  (C) Paul Evans, 2011 -- leonerd@leonerd.org.uk
+#  (C) Paul Evans, 2011-2012 -- leonerd@leonerd.org.uk
 
 package stringification;
 
@@ -10,7 +10,7 @@ use warnings;
 
 use Carp;
 
-our $VERSION = '0.01_002';
+our $VERSION = '0.01_003';
 
 require XSLoader;
 XSLoader::load(__PACKAGE__, $VERSION );
@@ -106,6 +106,13 @@ Hook more ops; including
 
 Consider whether to detect for objects that don't have overload magic, and
 forbid these too.
+
+=item *
+
+A mode where string conversions just give warnings, rather than outright
+failures.
+
+ no stringification 'warn';
 
 =back
 
