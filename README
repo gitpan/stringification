@@ -23,6 +23,12 @@ DESCRIPTION
      uc $ref
      ucfirst $ref
      quotemeta $ref
+     $ref =~ m//
+     split //, $ref
+     join $ref, @strs
+     join "", $ref
+     print $ref
+     say $ref
 
     When disabled by `no stringification', all of these operations will fail
     with an exception when invoked on a non-object reference.
@@ -40,11 +46,6 @@ TODO
 
     *   Hook more ops; including
 
-         print $ref
-         say $ref
-         join "", $ref
-         split //, $ref
-         $ref =~ m//
          $ref =~ s///;
          s//$ref/;
          substr( $ref, 0, 0 )

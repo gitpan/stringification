@@ -47,6 +47,7 @@ OP *(*real_pp_ucfirst)(pTHX);
 OP *(*real_pp_lc)(pTHX);
 OP *(*real_pp_lcfirst)(pTHX);
 OP *(*real_pp_quotemeta)(pTHX);
+OP *(*real_pp_match)(pTHX);
 
 PP(pp_stringification_top1) {
   dSP;
@@ -65,6 +66,8 @@ PP(pp_stringification_top1) {
         return (*real_pp_lcfirst)(aTHX);
       case OP_QUOTEMETA:
         return (*real_pp_quotemeta)(aTHX);
+      case OP_MATCH:
+        return (*real_pp_match)(aTHX);
     }
   }
 
@@ -83,10 +86,46 @@ PP(pp_stringification_concat) {
   croak("Attempted to %s a reference", PL_op_desc[PL_op->op_type]);
 }
 
+OP *(*real_pp_split)(pTHX);
+
+PP(pp_stringification_split) {
+  dSP;
+
+  if(is_allowed(sp[-1]) || is_enabled(aTHX)) {
+    return (*real_pp_split)(aTHX);
+  }
+
+  croak("Attempted to %s a reference", PL_op_desc[PL_op->op_type]);
+}
+
+OP *(*real_pp_join)(pTHX);
+OP *(*real_pp_print)(pTHX);
+
+PP(pp_stringification_all) {
+  dSP; dMARK;
+  SV **svp;
+
+  if(!is_enabled(aTHX)) {
+    for(svp = MARK; svp <= SP; svp++) {
+      if(!is_allowed(*svp))
+        croak("Attempted to %s a reference", PL_op_desc[PL_op->op_type]);
+    }
+  }
+
+  switch(PL_op->op_type) {
+    case OP_JOIN:
+      return (*real_pp_join)(aTHX);
+    case OP_PRINT:
+    case OP_SAY: /* OP_SAY and OP_PRINT share the same function */
+      return (*real_pp_print)(aTHX);
+  }
+}
+
 MODULE = stringification       PACKAGE = stringification
 
 BOOT:
 if(!init_done++) {
+  /* top1 */
   real_pp_stringify = PL_ppaddr[OP_STRINGIFY];
   PL_ppaddr[OP_STRINGIFY] = &Perl_pp_stringification_top1;
   real_pp_uc = PL_ppaddr[OP_UC];
@@ -99,7 +138,19 @@ if(!init_done++) {
   PL_ppaddr[OP_LCFIRST] = &Perl_pp_stringification_top1;
   real_pp_quotemeta = PL_ppaddr[OP_QUOTEMETA];
   PL_ppaddr[OP_QUOTEMETA] = &Perl_pp_stringification_top1;
+  real_pp_match = PL_ppaddr[OP_MATCH];
+  PL_ppaddr[OP_MATCH] = &Perl_pp_stringification_top1;
 
   real_pp_concat = PL_ppaddr[OP_CONCAT];
   PL_ppaddr[OP_CONCAT] = &Perl_pp_stringification_concat;
+
+  real_pp_split = PL_ppaddr[OP_SPLIT];
+  PL_ppaddr[OP_SPLIT] = &Perl_pp_stringification_split;
+
+  /* all */
+  real_pp_join = PL_ppaddr[OP_JOIN];
+  PL_ppaddr[OP_JOIN] = &Perl_pp_stringification_all;
+  real_pp_print = PL_ppaddr[OP_PRINT];
+  PL_ppaddr[OP_PRINT] = &Perl_pp_stringification_all;
+  PL_ppaddr[OP_SAY]   = &Perl_pp_stringification_all; /* OP_SAY and OP_PRINT share the same function */
 }

@@ -7,6 +7,10 @@ my $build = Module::Build->new(
    module_name => 'stringification',
    requires => {
       'XSLoader' => 0,
+
+      # I can't work out how to make this work on 5.8.9's lexical hint hash
+      # "patches welcome" if anyone knows and cares...
+      'perl'     => '5.10.0',
    },
    build_requires => {
       'Test::Fatal' => 0,

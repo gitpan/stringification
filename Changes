@@ -1,5 +1,8 @@
 Revision history for overload-substr
 
+0.01_004 CHANGES:
+         * Hook more ops - regexp match, split, join, print/say.
+
 0.01_003 CHANGES:
          * Back compat for perls before 5.9.5 - lack of cop_hints_hash
 

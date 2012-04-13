@@ -10,7 +10,7 @@ use warnings;
 
 use Carp;
 
-our $VERSION = '0.01_003';
+our $VERSION = '0.01_004';
 
 require XSLoader;
 XSLoader::load(__PACKAGE__, $VERSION );
@@ -43,6 +43,12 @@ the following operations:
  uc $ref
  ucfirst $ref
  quotemeta $ref
+ $ref =~ m//
+ split //, $ref
+ join $ref, @strs
+ join "", $ref
+ print $ref
+ say $ref
 
 When disabled by C<no stringification>, all of these operations will fail with
 an exception when invoked on a non-object reference.
@@ -73,11 +79,6 @@ sub import
    delete $^H{stringification};
 }
 
-# Keep perl happy; keep Britain tidy
-1;
-
-__END__
-
 =head1 TODO
 
 =over 4
@@ -91,11 +92,6 @@ modules.
 
 Hook more ops; including
 
- print $ref
- say $ref
- join "", $ref
- split //, $ref
- $ref =~ m//
  $ref =~ s///;
  s//$ref/;
  substr( $ref, 0, 0 )
@@ -119,3 +115,7 @@ failures.
 =head1 AUTHOR
 
 Paul Evans <leonerd@leonerd.org.uk>
+
+=cut
+
+0x55AA;
